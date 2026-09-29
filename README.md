@@ -14,4 +14,4 @@ The repository includes a Pages deployment workflow, so subsequent pushes to `ma
 
 ## Current limitations
 
-The game is an early solo playtest, not real-time multiplayer. Card art uses placeholders. No server-side accounts, shared high scores, or cloud saves.
+The game is an early solo playtest, not real-time multiplayer. Cards now use 200 distinct painterly scene panels across five decks, plus five commander portraits. The scenes are generated illustrations and should be reviewed for biblical and historical accuracy before a physical release. No server-side accounts, shared high scores, or cloud saves.
