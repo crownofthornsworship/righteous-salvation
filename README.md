@@ -1,17 +1,17 @@
 # Righteous Salvation — Genesis Edition
 
-Browser-based, mobile-friendly single-player prototype with five selectable commanders and computer opponents. Each commander has a 40-card singleton deck: every named card appears once, with 200 distinct cards across the five decks. Drawn cards are revealed above your hand and named in the Journey Log. No installation, accounts, ads, or backend required.
+[Play the public game](https://crownofthornsworship.github.io/righteous-salvation/).
 
-## Publish with GitHub Pages
+A mobile-friendly solo strategy card playtest with six biblical commanders: David, Esther, Moses, Paul, Noah, and Ruth. Each has a distinct forty-card singleton deck with original card names and artwork, for 240 unique cards. Choose your commander and face a computer opponent.
 
-1. Create a **public** repository named `righteous-salvation` (do not initialize it with a README).
-2. Upload the **contents** of this directory to the repository's `main` branch, including `.github/workflows/pages.yml`.
-3. In **Settings → Pages → Build and deployment**, choose **GitHub Actions**.
-4. Open the **Actions** tab and wait for `Deploy Righteous Salvation` to succeed.
-5. Share `https://YOUR-GITHUB-USERNAME.github.io/righteous-salvation/`.
+## Opening hand
 
-The repository includes a Pages deployment workflow, so subsequent pushes to `main` redeploy automatically. This is a public link, not an access-controlled private beta; share only with intended testers if desired, but anyone with the URL may visit.
+You see your five-card opening hand before the first turn. A Blessing supplies Faith. You may redraw up to twice, taking four cards and then three. You cannot keep an opening hand without a Blessing; the final redraw includes one. Returned cards are reshuffled, so there are no duplicates. Both players draw one card at the start of their first turn.
+
+Ruth's Growth and Grace deck centers on gleaning, loyal companions, refuge, and shared provision. Her artwork includes forty distinct scene panels and a separate commander portrait.
+
+The game runs in a browser without installation, accounts, advertisements, or a backend. New draws are shown above your hand and recorded in the Journey Log.
 
 ## Current limitations
 
-The game is an early solo playtest, not real-time multiplayer. Cards now use 200 distinct painterly scene panels across five decks, plus five commander portraits. The scenes are generated illustrations and should be reviewed for biblical and historical accuracy before a physical release. No server-side accounts, shared high scores, or cloud saves.
+This remains an early solo playtest, not real-time multiplayer. Generated biblical-era illustrations should be reviewed for historical details before a physical release. There are no cloud saves or shared high scores.
