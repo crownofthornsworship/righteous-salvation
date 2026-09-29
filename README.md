@@ -1,6 +1,6 @@
 # Righteous Salvation — Genesis Edition
 
-Browser-based, mobile-friendly single-player prototype with five selectable commanders and computer opponents. No installation, accounts, ads, or backend required.
+Browser-based, mobile-friendly single-player prototype with five selectable commanders and computer opponents. Each commander has a 40-card singleton deck: every named card appears once, with 200 distinct cards across the five decks. Drawn cards are revealed above your hand and named in the Journey Log. No installation, accounts, ads, or backend required.
 
 ## Publish with GitHub Pages
 
