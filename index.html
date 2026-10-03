@@ -96,4 +96,4 @@ function showRules(){modal(`<h2>How to play</h2><p><b>Your goal:</b> Bring the o
 function restart(){if(!s||confirm('Choose decks and start a new match?')){closeModal();document.getElementById('start').style.display='flex';buildChoices()}}
 function downloadNotes(){let blob=new Blob([`Righteous Salvation v0.5\n${decks[s.me.key].name} vs ${decks[s.ai.key].name}\n\n`+history.join('\n')],{type:'text/plain'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='righteous-salvation-match-log.txt';a.click();URL.revokeObjectURL(url)}
 buildChoices();
-</script></body></html>
+</script><a href="https://venmo.com/u/MTA-7777" target="_blank" rel="noopener" aria-label="Buy Mike a C4 on Venmo" style="position:fixed;right:12px;bottom:12px;z-index:7;display:inline-flex;align-items:center;padding:8px 12px;border:1px solid #85888d;border-radius:999px;background:#202226e8;color:#fff;text-decoration:none;font:700 12px 'DM Sans',sans-serif;box-shadow:0 4px 16px #0008">⚡ Buy Mike a C4 · @MTA-7777</a></body></html>
