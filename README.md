@@ -12,6 +12,10 @@ Ruth's Growth and Grace deck centers on gleaning, loyal companions, refuge, and 
 
 The game runs in a browser without installation, accounts, advertisements, or a backend. New draws are shown above your hand and recorded in the Journey Log.
 
+## Next updates
+
+See [GAME_ROADMAP.md](GAME_ROADMAP.md) for rules clarity, balance, stronger AI, campaign modes, visual polish, and release testing.
+
 ## Current limitations
 
 This remains an early solo playtest, not real-time multiplayer. Generated biblical-era illustrations should be reviewed for historical details before a physical release. There are no cloud saves or shared high scores.
