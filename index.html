@@ -1598,3 +1598,2553 @@
               />
               <path
                 d="M36 9 58 19v16c0 14-8 22-22 27-14-5-22-13-22-27V19L36 9Z"
+                fill="none"
+                stroke="#bb2634"
+                stroke-width="2"
+              />
+              <path
+                d="M36 17v32m-12-19h24"
+                stroke="#f8f6f2"
+                stroke-width="5"
+                stroke-linecap="round"
+              />
+              <path
+                d="m23 52 13 7 13-7"
+                fill="none"
+                stroke="#bb2634"
+                stroke-width="3"
+              />
+              <circle cx="36" cy="30" r="3" fill="#bb2634" /></svg></span
+          ><span>RIGHTEOUS<br /><em>SALVATION</em></span>
+        </div>
+        <p class="edition">ILLUSTRATED GENESIS EDITION</p>
+        <h1>Choose your calling.</h1>
+        <p>
+          Six commanders. Six distinct ministries. Build a ministry, gather
+          Faith, and bring your opponent to 20 Salvation in this mobile-friendly
+          solo playtest.
+        </p>
+        <div class="deck-choice" id="deckChoices"></div>
+        <div class="start-actions">
+          <label for="opponent">Opponent:</label
+          ><select id="opponent"></select
+          ><button onclick="begin()">Begin Playtest →</button>
+        </div>
+        <p class="small">
+          No login · No advertisements · Works offline after loading
+        </p>
+      </div>
+    </div>
+    <div
+      class="opening-back"
+      id="opening"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="openingTitle"
+    >
+      <div class="opening-panel">
+        <h2 id="openingTitle">Your opening hand</h2>
+        <p id="openingInfo"></p>
+        <div class="opening-cards" id="openingCards"></div>
+        <p id="openingStatus"></p>
+        <div class="opening-actions">
+          <button id="keepOpening" onclick="keepOpening()">
+            Keep this hand</button
+          ><button
+            class="secondary"
+            id="redrawOpening"
+            onclick="redrawOpening()"
+          >
+            Redraw hand
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+      "use strict";
+      const colors = {
+        green: "Growth",
+        red: "Zeal",
+        white: "Grace",
+        blue: "Wisdom",
+        purple: "Perseverance",
+      };
+      const decks = {
+        david: {
+          name: "David, Faithful Shepherd",
+          icon: "🪕",
+          colors: ["green", "red"],
+          style:
+            "Shepherd fellowship, growing disciples and courageous ministry.",
+          command: {
+            name: "David, Faithful Shepherd",
+            art: "🪕",
+            cost: 4,
+            req: "green",
+            w: 3,
+            r: 4,
+            tribe: "Shepherd",
+            text: "Shepherd’s Heart — Whenever David ministers successfully, create a 1/1 Disciple. Courage — +2 Witness when opposed by a Servant with greater Resolve.",
+            ability: "david",
+          },
+          units: [
+            [
+              "Young Shepherd",
+              "🐑",
+              1,
+              "green",
+              1,
+              2,
+              "Shepherd",
+              "Fellowship — +1 Witness while you control another Shepherd.",
+              "fellowship",
+            ],
+            [
+              "Faithful Musician",
+              "🎶",
+              2,
+              "green",
+              2,
+              2,
+              "Shepherd",
+              "Song of Praise — When this enters, remove 1 Sin.",
+              "cleanse1",
+            ],
+            [
+              "Faithful Companion",
+              "🤝",
+              2,
+              "green",
+              1,
+              3,
+              "Shepherd",
+              "Encouragement — Other Shepherds you control give +1 Salvation when they minister successfully.",
+              "companion",
+            ],
+            [
+              "Valiant Messenger",
+              "🏃",
+              2,
+              "red",
+              2,
+              1,
+              "Messenger",
+              "Godspeed — May minister the turn this enters.",
+              "godspeed",
+            ],
+            [
+              "Humble Shepherd",
+              "🌄",
+              3,
+              "green",
+              2,
+              3,
+              "Shepherd",
+              "When this enters, create a 1/1 Disciple.",
+              "token",
+            ],
+            [
+              "Songs of Deliverance",
+              "🎺",
+              3,
+              "red",
+              3,
+              2,
+              "Musician",
+              "When this enters, give another Servant +1 Witness permanently.",
+              "inspire",
+            ],
+          ],
+          prayers: [
+            [
+              "Courage of David",
+              "🪨",
+              1,
+              "red",
+              "Give a ready Servant +2 Witness this turn (+3 if a Shepherd).",
+              "buff",
+            ],
+            [
+              "Psalm of Restoration",
+              "📖",
+              2,
+              "green",
+              "Remove 2 Sin and draw a card.",
+              "restore",
+            ],
+            ["Abundant Harvest", "🌾", 2, "green", "Draw two cards.", "draw2"],
+          ],
+        },
+        esther: {
+          name: "Esther, Courageous Queen",
+          icon: "👑",
+          colors: ["white", "blue"],
+          style: "Preparation, card selection and protective ministry.",
+          command: {
+            name: "Esther, Courageous Queen",
+            art: "👑",
+            cost: 4,
+            req: "white",
+            w: 2,
+            r: 5,
+            tribe: "Royal",
+            text: "For Such a Time — Once each turn, spend 1 Faith to give a Servant +2 Resolve until your next turn. Royal Preparation — Your second card each turn: draw then discard. ",
+            ability: "esther",
+          },
+          units: [
+            [
+              "Palace Attendant",
+              "🕊️",
+              1,
+              "white",
+              1,
+              2,
+              "Royal",
+              "Faithful Service — When this engages, inspect the top card of your deck.",
+              "scry",
+            ],
+            [
+              "Royal Scribe",
+              "📜",
+              2,
+              "blue",
+              1,
+              3,
+              "Scholar",
+              "Counsel — When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Faithful Guardian",
+              "🛡️",
+              2,
+              "white",
+              1,
+              4,
+              "Guardian",
+              "Steadfast — +1 Resolve while engaging.",
+              "guardian",
+            ],
+            [
+              "Royal Messenger",
+              "🕯️",
+              2,
+              "blue",
+              2,
+              1,
+              "Messenger",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Wise Counselor",
+              "📚",
+              3,
+              "blue",
+              2,
+              3,
+              "Scholar",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Courageous Advocate",
+              "⚖️",
+              3,
+              "white",
+              2,
+              4,
+              "Royal",
+              "When this enters, remove 1 Sin.",
+              "cleanse1",
+            ],
+          ],
+          prayers: [
+            [
+              "Royal Protection",
+              "🛡️",
+              1,
+              "white",
+              "Give one Servant +2 Resolve until your next turn.",
+              "shield",
+            ],
+            ["Prepared Answer", "📜", 2, "blue", "Draw two cards.", "draw2"],
+            [
+              "Moment of Courage",
+              "🌟",
+              2,
+              "white",
+              "Give a ready Servant +2 Witness this turn.",
+              "buff",
+            ],
+          ],
+        },
+        moses: {
+          name: "Moses, The Deliverer",
+          icon: "🌊",
+          colors: ["blue", "red"],
+          style: "Powerful events, tactical disruption and sudden ministry.",
+          command: {
+            name: "Moses, The Deliverer",
+            art: "🌊",
+            cost: 4,
+            req: "blue",
+            w: 3,
+            r: 3,
+            tribe: "Prophet",
+            text: "Deliverance — When Moses enters, exhaust one opposing Servant. Each time Moses ministers successfully, draw a card.",
+            ability: "moses",
+          },
+          units: [
+            [
+              "Wilderness Guide",
+              "🏜️",
+              1,
+              "blue",
+              1,
+              2,
+              "Guide",
+              "When this enters, look ahead: draw then discard.",
+              "filter",
+            ],
+            [
+              "Burning Bush Witness",
+              "🔥",
+              2,
+              "red",
+              2,
+              2,
+              "Prophet",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Faithful Levite",
+              "📜",
+              2,
+              "blue",
+              1,
+              3,
+              "Levite",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Staff Bearer",
+              "🪵",
+              2,
+              "red",
+              2,
+              2,
+              "Guide",
+              "When this enters, exhaust an opposing Servant.",
+              "exhaust",
+            ],
+            [
+              "Sea Path Herald",
+              "🌊",
+              3,
+              "blue",
+              3,
+              2,
+              "Messenger",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Desert Elder",
+              "⛰️",
+              3,
+              "red",
+              2,
+              4,
+              "Elder",
+              "Steadfast — +1 Resolve when engaging.",
+              "guardian",
+            ],
+          ],
+          prayers: [
+            [
+              "Part the Waters",
+              "🌊",
+              2,
+              "blue",
+              "Exhaust up to two opposing Servants.",
+              "exhaust2",
+            ],
+            [
+              "Signs and Wonders",
+              "🔥",
+              2,
+              "red",
+              "Give a ready Servant +3 Witness this turn.",
+              "buff3",
+            ],
+            [
+              "Provision in Wilderness",
+              "🍞",
+              2,
+              "blue",
+              "Draw two cards.",
+              "draw2",
+            ],
+          ],
+        },
+        paul: {
+          name: "Paul, Apostle to the Nations",
+          icon: "🗺️",
+          colors: ["red", "purple"],
+          style: "Rapid outreach, trials, repentance and returning Servants.",
+          command: {
+            name: "Paul, Apostle to the Nations",
+            art: "🗺️",
+            cost: 4,
+            req: "purple",
+            w: 3,
+            r: 3,
+            tribe: "Apostle",
+            text: "Missionary Zeal — Godspeed. Whenever Paul ministers successfully, remove 1 Sin and draw a card.",
+            ability: "paul",
+            godspeed: true,
+          },
+          units: [
+            [
+              "Roadside Witness",
+              "🥾",
+              1,
+              "red",
+              1,
+              1,
+              "Missionary",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Faithful Convert",
+              "🕯️",
+              2,
+              "purple",
+              2,
+              2,
+              "Disciple",
+              "When this enters, remove 1 Sin.",
+              "cleanse1",
+            ],
+            [
+              "Traveling Companion",
+              "🧭",
+              2,
+              "red",
+              2,
+              2,
+              "Missionary",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Prison Hymnist",
+              "🎵",
+              2,
+              "purple",
+              1,
+              3,
+              "Musician",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Church Planter",
+              "⛪",
+              3,
+              "red",
+              2,
+              3,
+              "Missionary",
+              "When this enters, create a 1/1 Disciple.",
+              "token",
+            ],
+            [
+              "Steadfast Apostle",
+              "📩",
+              3,
+              "purple",
+              3,
+              2,
+              "Apostle",
+              "When this enters, recover a Servant from your discard into your hand.",
+              "recover",
+            ],
+          ],
+          prayers: [
+            [
+              "Second Journey",
+              "🧳",
+              2,
+              "purple",
+              "Return a Servant from your discard to your hand.",
+              "recover",
+            ],
+            [
+              "Unshaken Testimony",
+              "⚡",
+              1,
+              "red",
+              "Give a ready Servant +2 Witness this turn.",
+              "buff",
+            ],
+            [
+              "Hope in Chains",
+              "🔓",
+              2,
+              "purple",
+              "Remove 2 Sin and draw a card.",
+              "restore",
+            ],
+          ],
+        },
+        noah: {
+          name: "Noah, Faithful in the Storm",
+          icon: "🌈",
+          colors: ["green", "white"],
+          style:
+            "Provision, protection, fellowship and a steadily growing ministry.",
+          command: {
+            name: "Noah, Faithful in the Storm",
+            art: "🌈",
+            cost: 4,
+            req: "green",
+            w: 2,
+            r: 5,
+            tribe: "Builder",
+            text: "Ark of Refuge — When Noah enters, create two 1/1 Disciple tokens. Your other Servants have +1 Resolve.",
+            ability: "noah",
+          },
+          units: [
+            [
+              "Ark Builder",
+              "🪚",
+              1,
+              "green",
+              1,
+              2,
+              "Builder",
+              "When this enters, create a 1/1 Disciple.",
+              "token",
+            ],
+            [
+              "Keeper of the Flock",
+              "🐏",
+              2,
+              "green",
+              2,
+              3,
+              "Shepherd",
+              "Fellowship — +1 Witness while you control another Shepherd.",
+              "fellowship",
+            ],
+            [
+              "Faithful Watchman",
+              "🔭",
+              2,
+              "white",
+              1,
+              4,
+              "Guardian",
+              "Steadfast — +1 Resolve when engaging.",
+              "guardian",
+            ],
+            [
+              "Dove Messenger",
+              "🕊️",
+              2,
+              "white",
+              2,
+              1,
+              "Messenger",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Covenant Keeper",
+              "🌈",
+              3,
+              "white",
+              2,
+              4,
+              "Builder",
+              "When this enters, remove 2 Sin.",
+              "cleanse2",
+            ],
+            [
+              "Family of Faith",
+              "👨‍👩‍👧‍👦",
+              3,
+              "green",
+              2,
+              3,
+              "Family",
+              "When this enters, create a 1/1 Disciple.",
+              "token",
+            ],
+          ],
+          prayers: [
+            [
+              "Shelter from Storm",
+              "⛵",
+              1,
+              "white",
+              "Give one Servant +2 Resolve until your next turn.",
+              "shield",
+            ],
+            [
+              "New Beginning",
+              "🌱",
+              2,
+              "green",
+              "Remove 2 Sin and draw a card.",
+              "restore",
+            ],
+            ["Harvest of Hope", "🌾", 2, "green", "Draw two cards.", "draw2"],
+          ],
+        },
+        ruth: {
+          name: "Ruth, Faithful Gleaner",
+          icon: "🌾",
+          colors: ["green", "white"],
+          style: "Loyalty, shared provision and refuge for the vulnerable.",
+          command: {
+            name: "Ruth, Faithful Gleaner",
+            art: "🌾",
+            cost: 4,
+            req: "green",
+            w: 2,
+            r: 4,
+            tribe: "Family",
+            text: "Faithful Gleaning — Once each turn when you play a Blessing, draw a card. Steadfast Love — When Ruth ministers successfully, create a Disciple and remove 1 Sin.",
+            ability: "ruth",
+          },
+          units: [
+            [
+              "Naomi, Faithful Guide",
+              "🧕",
+              1,
+              "white",
+              1,
+              3,
+              "Family",
+              "When this enters, draw a card and remove 1 Sin.",
+              "glean",
+            ],
+            [
+              "Bethlehem Gleaner",
+              "🌾",
+              1,
+              "green",
+              1,
+              2,
+              "Worker",
+              "When this enters, create a Disciple and remove 1 Sin.",
+              "share",
+            ],
+            [
+              "Boaz, Generous Kinsman",
+              "🤲",
+              2,
+              "white",
+              2,
+              3,
+              "Family",
+              "When this ministers successfully, draw a card.",
+              "generous",
+            ],
+            [
+              "Field Companion",
+              "🧺",
+              2,
+              "green",
+              2,
+              2,
+              "Worker",
+              "Loyalty — +1 Witness while another Servant is present.",
+              "loyal",
+            ],
+            [
+              "Threshing Floor Watcher",
+              "🕯️",
+              2,
+              "white",
+              1,
+              4,
+              "Guardian",
+              "Steadfast — +1 Resolve when engaging.",
+              "guardian",
+            ],
+            [
+              "Harvest Messenger",
+              "🏃",
+              3,
+              "green",
+              2,
+              2,
+              "Messenger",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+          ],
+          prayers: [
+            [
+              "Under His Wings",
+              "🪽",
+              1,
+              "white",
+              "Give a ready Servant +2 Resolve.",
+              "shield",
+            ],
+            [
+              "Handfuls on Purpose",
+              "🌾",
+              2,
+              "green",
+              "Draw two cards and create a Disciple.",
+              "harvest",
+            ],
+            [
+              "A Loyal Promise",
+              "❤️",
+              2,
+              "white",
+              "Remove 2 Sin and create a Disciple.",
+              "welcome",
+            ],
+          ],
+        },
+      };
+      // Every physical deck card has a distinct name and appears exactly once.
+      const additions = {
+        david: {
+          units: [
+            [
+              "Cave of Adullam Friend",
+              "🏕️",
+              1,
+              "red",
+              1,
+              2,
+              "Companion",
+              "When this enters, give another Servant +1 Witness this turn.",
+              "inspire",
+            ],
+            [
+              "Bethlehem Harpist",
+              "🎼",
+              2,
+              "green",
+              1,
+              3,
+              "Musician",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Valley Stone Gatherer",
+              "🪨",
+              3,
+              "red",
+              3,
+              2,
+              "Shepherd",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Covenant Friend Jonathan",
+              "🏹",
+              3,
+              "green",
+              2,
+              4,
+              "Companion",
+              "When this enters, give a Servant +2 Resolve.",
+              "ward",
+            ],
+          ],
+          prayers: [
+            [
+              "Still Waters Psalm",
+              "💧",
+              1,
+              "green",
+              "Remove 2 Sin.",
+              "cleanse2",
+            ],
+            [
+              "A Heart After God",
+              "❤️",
+              2,
+              "red",
+              "Give a ready Servant +2 Witness this turn.",
+              "buff",
+            ],
+            [
+              "Songs in the Cave",
+              "🎵",
+              2,
+              "green",
+              "Draw a card and create a Disciple.",
+              "drawtoken",
+            ],
+            [
+              "The Lord My Rock",
+              "⛰️",
+              2,
+              "red",
+              "Give a ready Servant +2 Resolve.",
+              "shield",
+            ],
+            [
+              "Mercy in the Wilderness",
+              "🌱",
+              2,
+              "green",
+              "Return a Servant from your discard to your hand.",
+              "recover",
+            ],
+            [
+              "Courage Before Giants",
+              "🛡️",
+              3,
+              "red",
+              "Exhaust up to two opposing Servants.",
+              "exhaust2",
+            ],
+            [
+              "A Table Prepared",
+              "🍇",
+              3,
+              "green",
+              "Draw two cards and remove 1 Sin.",
+              "feast",
+            ],
+          ],
+        },
+        esther: {
+          units: [
+            [
+              "Mordecai at the Gate",
+              "🚪",
+              1,
+              "blue",
+              1,
+              3,
+              "Royal",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Susa Messenger",
+              "📨",
+              2,
+              "white",
+              2,
+              2,
+              "Messenger",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Queen’s Handmaiden",
+              "🌷",
+              3,
+              "white",
+              2,
+              4,
+              "Royal",
+              "When this enters, create a Disciple.",
+              "token",
+            ],
+            [
+              "Royal Watchkeeper",
+              "👁️",
+              3,
+              "blue",
+              2,
+              4,
+              "Guardian",
+              "Steadfast — +1 Resolve when engaging.",
+              "guardian",
+            ],
+          ],
+          prayers: [
+            ["A Time to Speak", "🗣️", 1, "blue", "Draw a card.", "draw1"],
+            [
+              "Three Days of Prayer",
+              "🙏",
+              2,
+              "white",
+              "Remove 2 Sin.",
+              "cleanse2",
+            ],
+            [
+              "The Open Door",
+              "🚪",
+              2,
+              "blue",
+              "Exhaust up to two opposing Servants.",
+              "exhaust2",
+            ],
+            [
+              "Favor Before the King",
+              "👑",
+              2,
+              "white",
+              "Give a ready Servant +2 Witness this turn.",
+              "buff",
+            ],
+            [
+              "A Banquet of Courage",
+              "🍽️",
+              3,
+              "white",
+              "Draw a card and create a Disciple.",
+              "drawtoken",
+            ],
+            [
+              "Words of Wisdom",
+              "📚",
+              2,
+              "blue",
+              "Return a Servant from your discard to your hand.",
+              "recover",
+            ],
+            [
+              "Shelter for the People",
+              "🕊️",
+              3,
+              "white",
+              "Give a ready Servant +2 Resolve.",
+              "shield",
+            ],
+          ],
+        },
+        moses: {
+          units: [
+            [
+              "Desert Scout",
+              "👣",
+              1,
+              "red",
+              1,
+              2,
+              "Guide",
+              "Godspeed — May minister immediately.",
+              "godspeed",
+            ],
+            [
+              "Tent of Meeting Keeper",
+              "⛺",
+              2,
+              "blue",
+              1,
+              4,
+              "Levite",
+              "When this enters, remove 2 Sin.",
+              "cleanse2",
+            ],
+            [
+              "Manna Gatherer",
+              "🍞",
+              3,
+              "blue",
+              2,
+              3,
+              "Guide",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Mountain Intercessor",
+              "🏔️",
+              3,
+              "red",
+              3,
+              2,
+              "Prophet",
+              "When this enters, give another Servant +1 Witness.",
+              "inspire",
+            ],
+          ],
+          prayers: [
+            ["Morning Manna", "🍞", 1, "blue", "Draw a card.", "draw1"],
+            [
+              "Pillar of Fire",
+              "🔥",
+              2,
+              "red",
+              "Give a ready Servant +3 Witness this turn.",
+              "buff3",
+            ],
+            [
+              "Cloud by Day",
+              "☁️",
+              2,
+              "blue",
+              "Give a ready Servant +2 Resolve.",
+              "shield",
+            ],
+            [
+              "Water from the Rock",
+              "💦",
+              2,
+              "blue",
+              "Remove 2 Sin and draw a card.",
+              "restore",
+            ],
+            [
+              "Let My People Go",
+              "⛓️",
+              3,
+              "red",
+              "Exhaust up to two opposing Servants.",
+              "exhaust2",
+            ],
+            [
+              "Songs on the Shore",
+              "🎶",
+              3,
+              "blue",
+              "Draw a card and create a Disciple.",
+              "drawtoken",
+            ],
+            [
+              "The Promised Path",
+              "🧭",
+              2,
+              "red",
+              "Return a Servant from your discard to your hand.",
+              "recover",
+            ],
+          ],
+        },
+        paul: {
+          units: [
+            [
+              "Lydia’s Household",
+              "🏠",
+              1,
+              "purple",
+              1,
+              3,
+              "Family",
+              "When this enters, create a Disciple.",
+              "token",
+            ],
+            [
+              "Tentmaking Friend",
+              "🪡",
+              2,
+              "red",
+              2,
+              2,
+              "Missionary",
+              "When this enters, remove 1 Sin.",
+              "cleanse1",
+            ],
+            [
+              "Letter Carrier",
+              "✉️",
+              3,
+              "purple",
+              2,
+              3,
+              "Messenger",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+            [
+              "Barnabas the Encourager",
+              "🤲",
+              3,
+              "red",
+              2,
+              4,
+              "Apostle",
+              "When this enters, give another Servant +1 Witness.",
+              "inspire",
+            ],
+          ],
+          prayers: [
+            [
+              "Open Prison Doors",
+              "🔑",
+              1,
+              "purple",
+              "Return a Servant from your discard to your hand.",
+              "recover",
+            ],
+            [
+              "Joy in Every Season",
+              "🎵",
+              2,
+              "purple",
+              "Remove 2 Sin.",
+              "cleanse2",
+            ],
+            ["A Letter of Hope", "✉️", 2, "red", "Draw two cards.", "draw2"],
+            [
+              "Road to Damascus",
+              "☀️",
+              2,
+              "red",
+              "Exhaust up to two opposing Servants.",
+              "exhaust2",
+            ],
+            [
+              "Strength in Weakness",
+              "💪",
+              2,
+              "purple",
+              "Give a ready Servant +2 Resolve.",
+              "shield",
+            ],
+            [
+              "Good News Far Away",
+              "🌍",
+              3,
+              "red",
+              "Give a ready Servant +3 Witness this turn.",
+              "buff3",
+            ],
+            [
+              "A Church Gathered",
+              "⛪",
+              3,
+              "purple",
+              "Draw a card and create a Disciple.",
+              "drawtoken",
+            ],
+          ],
+        },
+        noah: {
+          units: [
+            [
+              "Timber Gatherer",
+              "🪵",
+              1,
+              "green",
+              1,
+              2,
+              "Builder",
+              "When this enters, create a Disciple.",
+              "token",
+            ],
+            [
+              "Rain Watcher",
+              "🌧️",
+              2,
+              "white",
+              1,
+              4,
+              "Guardian",
+              "Steadfast — +1 Resolve when engaging.",
+              "guardian",
+            ],
+            [
+              "Olive Branch Bearer",
+              "🫒",
+              3,
+              "green",
+              2,
+              3,
+              "Messenger",
+              "When this enters, remove 2 Sin.",
+              "cleanse2",
+            ],
+            [
+              "New Earth Gardener",
+              "🌿",
+              3,
+              "white",
+              2,
+              4,
+              "Builder",
+              "When this enters, draw a card.",
+              "draw1",
+            ],
+          ],
+          prayers: [
+            [
+              "Gather Two by Two",
+              "🐾",
+              1,
+              "green",
+              "Create two Disciples.",
+              "token2",
+            ],
+            [
+              "Rains of Renewal",
+              "🌧️",
+              2,
+              "white",
+              "Remove 2 Sin and draw a card.",
+              "restore",
+            ],
+            ["The Open Window", "🪟", 2, "green", "Draw two cards.", "draw2"],
+            [
+              "Olive Leaf Returned",
+              "🫒",
+              2,
+              "white",
+              "Return a Servant from your discard to your hand.",
+              "recover",
+            ],
+            [
+              "Covenant in the Clouds",
+              "🌈",
+              3,
+              "white",
+              "Give a ready Servant +2 Resolve.",
+              "shield",
+            ],
+            [
+              "Dry Ground Ahead",
+              "🏞️",
+              2,
+              "green",
+              "Exhaust up to two opposing Servants.",
+              "exhaust2",
+            ],
+            [
+              "A New Beginning",
+              "🌅",
+              3,
+              "green",
+              "Draw a card and create a Disciple.",
+              "drawtoken",
+            ],
+          ],
+        },
+        ruth: {
+          units: [
+            [
+              "Kindness at the Gate",
+              "🚪",
+              1,
+              "white",
+              1,
+              3,
+              "Family",
+              "When this enters, remove 1 Sin.",
+              "cleanse1",
+            ],
+            [
+              "Early Field Worker",
+              "🌅",
+              2,
+              "green",
+              2,
+              2,
+              "Worker",
+              "When this enters, draw a card and remove 1 Sin.",
+              "glean",
+            ],
+            [
+              "Neighbor with Bread",
+              "🍞",
+              2,
+              "white",
+              1,
+              3,
+              "Neighbor",
+              "When this enters, create a Disciple and remove 1 Sin.",
+              "share",
+            ],
+            [
+              "Redeeming Witness",
+              "📜",
+              3,
+              "green",
+              3,
+              3,
+              "Family",
+              "Loyalty — +1 Witness while another Servant is present.",
+              "loyal",
+            ],
+          ],
+          prayers: [
+            [
+              "Bread for Naomi",
+              "🍞",
+              1,
+              "green",
+              "Remove 2 Sin and draw a card.",
+              "restore",
+            ],
+            [
+              "A Place to Rest",
+              "🏡",
+              2,
+              "white",
+              "Give a ready Servant +2 Resolve.",
+              "shield",
+            ],
+            [
+              "Shared Harvest",
+              "🧺",
+              2,
+              "green",
+              "Draw two cards and create a Disciple.",
+              "harvest",
+            ],
+            [
+              "Refuge in Bethlehem",
+              "🕊️",
+              2,
+              "white",
+              "Remove 2 Sin and create a Disciple.",
+              "welcome",
+            ],
+            [
+              "Faithful Through the Journey",
+              "🛤️",
+              2,
+              "green",
+              "Return a Servant from your discard to your hand.",
+              "recover",
+            ],
+            [
+              "The Redeemer at the Gate",
+              "📜",
+              3,
+              "white",
+              "Exhaust up to two opposing Servants.",
+              "exhaust2",
+            ],
+            [
+              "Joy of a New Family",
+              "✨",
+              3,
+              "green",
+              "Draw a card and create a Disciple.",
+              "drawtoken",
+            ],
+          ],
+        },
+      };
+      const blessingPlaces = {
+        david: [
+          "Bethlehem",
+          "Judah",
+          "Adullam",
+          "Hebron",
+          "Ziklag",
+          "Elah",
+          "Ein Gedi",
+          "Gibeon",
+          "Jerusalem",
+          "Judean Hills",
+          "Shepherd’s Field",
+          "The Quiet Pasture",
+          "The Harp Grove",
+          "The Valley Spring",
+          "The Cedar Ridge",
+          "The Olive Terrace",
+          "The Hidden Cave",
+          "The Southern Well",
+          "The Morning Meadow",
+          "The King’s Garden",
+        ],
+        esther: [
+          "Susa",
+          "The Palace",
+          "The Royal Gate",
+          "The Garden Court",
+          "The Scribe’s Hall",
+          "The Banquet Hall",
+          "The Eastern Tower",
+          "The Quiet Chamber",
+          "The Queen’s Walk",
+          "The Persian Road",
+          "The Inner Court",
+          "The Lantern Hall",
+          "The City Wall",
+          "The Marble Steps",
+          "The River Gate",
+          "The Royal Orchard",
+          "The Courtyard Well",
+          "The Prayer Room",
+          "The Morning Balcony",
+          "The Golden Threshold",
+        ],
+        moses: [
+          "The Nile Shore",
+          "The Burning Bush",
+          "Mount Horeb",
+          "The Wilderness",
+          "The Red Sea",
+          "Marah",
+          "Elim",
+          "Sinai",
+          "The Tent of Meeting",
+          "The Desert Oasis",
+          "The Manna Field",
+          "The Rock Spring",
+          "The Cloud Path",
+          "The Eastern Dunes",
+          "The Campfire",
+          "The Mountain Pass",
+          "The Reed Banks",
+          "The River Ford",
+          "The Valley Crossing",
+          "The Dawn Encampment",
+        ],
+        paul: [
+          "Damascus Road",
+          "Antioch",
+          "Philippi",
+          "Corinth",
+          "Ephesus",
+          "Athens",
+          "Thessalonica",
+          "Berea",
+          "Iconium",
+          "Lystra",
+          "Troas",
+          "Malta",
+          "Rome",
+          "The Tentmaker’s Shop",
+          "The Prison Court",
+          "The Harbor Road",
+          "The Upper Room",
+          "The Market Square",
+          "The City Gate",
+          "The Mission Trail",
+        ],
+        noah: [
+          "The Ark Yard",
+          "The Upper Deck",
+          "The Dove’s Perch",
+          "The Olive Grove",
+          "The Rainbow Valley",
+          "The New Orchard",
+          "The Mountain Landing",
+          "The Cedar Storehouse",
+          "The Rainy Hills",
+          "The Fresh Meadow",
+          "The Family Hearth",
+          "The Broad River",
+          "The Peaceful Shore",
+          "The Morning Ridge",
+          "The Dry Plains",
+          "The Vineyard",
+          "The East Window",
+          "The Animal Shelter",
+          "The Green Valley",
+          "The Covenant Hills",
+        ],
+        ruth: [
+          "The Road to Bethlehem",
+          "The Barley Field",
+          "The Gleaning Path",
+          "Naomi’s Courtyard",
+          "Boaz’s Field",
+          "The Threshing Floor",
+          "The Town Gate",
+          "The Harvest Well",
+          "The Olive Grove",
+          "The Evening Field",
+          "The Shared Table",
+          "The Village Road",
+          "The Grain Storehouse",
+          "The Morning Hills",
+          "The Quiet Shelter",
+          "The Wheat Terrace",
+          "The Stone Courtyard",
+          "The Lantern Path",
+          "The Family Hearth",
+          "The New Harvest",
+        ],
+      };
+      const defs = {},
+        deckLists = {};
+      let nextUid = 1,
+        s = null,
+        history = [],
+        chosen = "david",
+        enemy = "esther",
+        modalOpen = false;
+      for (const [key, deck] of Object.entries(decks)) {
+        let pool = [];
+        blessingPlaces[key].forEach((name, i) => {
+          let color = deck.colors[i % 2],
+            id = key + "_blessing" + i;
+          defs[id] = {
+            name,
+            kind: "Blessing",
+            color,
+            art: ["🌿", "✨", "🏞️", "🏔️", "🌅"][i % 5],
+            cost: 0,
+            text: "Exhaust: Generate 1 " + colors[color] + " Faith.",
+          };
+          pool.push(id);
+        });
+        [...deck.units, ...additions[key].units].forEach((u, i) => {
+          let id = key + "_unit" + i;
+          defs[id] = {
+            name: u[0],
+            art: u[1],
+            kind: "Servant",
+            cost: u[2],
+            color: u[3],
+            req: u[3],
+            w: u[4],
+            r: u[5],
+            tribe: u[6],
+            text: u[7],
+            ability: u[8],
+            godspeed: u[8] === "godspeed",
+          };
+          pool.push(id);
+        });
+        [...deck.prayers, ...additions[key].prayers].forEach((u, i) => {
+          let id = key + "_prayer" + i;
+          defs[id] = {
+            name: u[0],
+            art: u[1],
+            kind: "Prayer",
+            cost: u[2],
+            color: u[3],
+            req: u[3],
+            text: u[4],
+            ability: u[5],
+          };
+          pool.push(id);
+        });
+        if (
+          pool.length !== 40 ||
+          new Set(pool.map((id) => defs[id].name)).size !== 40
+        )
+          throw Error("Deck must contain 40 unique cards: " + key);
+        deckLists[key] = pool;
+        defs[key + "_commander"] = {
+          ...deck.command,
+          kind: "Commander",
+          color: deck.colors[0],
+        };
+      }
+      function make(id) {
+        return {
+          id,
+          uid: nextUid++,
+          tapped: false,
+          fresh: true,
+          buff: 0,
+          shield: 0,
+        };
+      }
+      function shuffle(a) {
+        a = [...a];
+        for (let i = a.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      function player(key) {
+        return {
+          key,
+          deck: shuffle(deckLists[key].map(make)),
+          hand: [],
+          board: [],
+          bless: [],
+          discard: [],
+          commander: make(key + "_commander"),
+          tax: 0,
+          sin: 10,
+          sal: 0,
+          played: 0,
+          blessingPlayed: false,
+          royalUsed: false,
+          royalCount: 0,
+        };
+      }
+      function draw(p, n = 1, reason = "Draw") {
+        let names = [];
+        for (let i = 0; i < n; i++) {
+          if (p.deck.length) {
+            let c = p.deck.pop();
+            p.hand.push(c);
+            names.push(defs[c.id].name);
+          } else {
+            p.sin += 2;
+            log(decks[p.key].name + " has no cards to draw and gains 2 Sin.");
+          }
+        }
+        if (!names.length) return;
+        let yours = p === s.me;
+        if (yours) {
+          s.recentDraws = { reason, names };
+          log("You drew " + names.join(", ") + " (" + reason + ").");
+          if (document.getElementById("start").style.display === "none")
+            toast("Drew: " + names.join(", "));
+        } else
+          log(
+            decks[p.key].name +
+              " drew " +
+              names.length +
+              " card" +
+              (names.length === 1 ? "" : "s") +
+              " (" +
+              reason +
+              ").",
+          );
+        return names;
+      }
+      function log(t) {
+        history.push("Turn " + s.turn + ": " + t);
+        document.getElementById("log").innerHTML = history
+          .slice(-60)
+          .reverse()
+          .map((x) => "<div>" + x + "</div>")
+          .join("");
+        let live = document.getElementById("liveEvents");
+        live.innerHTML = history
+          .slice(-3)
+          .reverse()
+          .map(
+            (x, i) =>
+              '<div class="live-line' +
+              (i ? "" : " newest") +
+              '">' +
+              x +
+              "</div>",
+          )
+          .join("");
+        document.getElementById("liveHeading").textContent =
+          "Turn " + s.turn + " · Latest actions";
+      }
+      function toast(t) {
+        let el = document.getElementById("toast");
+        el.textContent = t;
+        el.style.display = "block";
+        clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => (el.style.display = "none"), 2600);
+      }
+      function buildChoices() {
+        document.getElementById("deckChoices").innerHTML = Object.entries(decks)
+          .map(
+            ([key, d]) =>
+              `<button class="${chosen === key ? "active" : ""}" onclick="choose('${key}')"><span class="choice-art" style="${artStyle(key + "_commander")}"></span><span class="choice-copy"><strong>${d.name}</strong><span class="deckbadge">${d.colors.map((c) => colors[c]).join(" · ")}</span><br><small>${d.style}</small></span></button>`,
+          )
+          .join("");
+        let options = Object.entries(decks).filter(([k]) => k !== chosen);
+        if (enemy === chosen) enemy = options[0][0];
+        document.getElementById("opponent").innerHTML = options
+          .map(
+            ([k, d]) =>
+              `<option value="${k}" ${enemy === k ? "selected" : ""}>${d.name}</option>`,
+          )
+          .join("");
+      }
+      function choose(key) {
+        chosen = key;
+        buildChoices();
+      }
+      let openingRedrawCount = 0;
+      function dealOpening(p, count, guarantee = false) {
+        p.deck = shuffle([...p.deck, ...p.hand]);
+        p.hand = [];
+        for (let i = 0; i < count; i++) p.hand.push(p.deck.pop());
+        if (guarantee && !p.hand.some((c) => defs[c.id].kind === "Blessing")) {
+          let i = p.deck.findIndex((c) => defs[c.id].kind === "Blessing");
+          if (i >= 0) {
+            let blessing = p.deck.splice(i, 1)[0];
+            p.deck.push(p.hand.pop());
+            p.hand.push(blessing);
+            p.deck = shuffle(p.deck);
+          }
+        }
+      }
+      function showOpening() {
+        let hasBlessing = s.me.hand.some((c) => defs[c.id].kind === "Blessing"),
+          left = 2 - openingRedrawCount;
+        document.getElementById("openingInfo").textContent =
+          `${s.me.hand.length} cards · ${left} redraw${left === 1 ? "" : "s"} left. Blessings supply Faith, like lands supply mana.`;
+        document.getElementById("openingCards").innerHTML = s.me.hand
+          .map((c) => {
+            let d = defs[c.id];
+            return `<div class="opening-card"><div class="image" style="${artStyle(c.id)}"></div><strong>${d.name}</strong><small>${d.kind}${d.cost ? " · " + d.cost + " Faith" : ""}</small></div>`;
+          })
+          .join("");
+        document.getElementById("openingStatus").className = hasBlessing
+          ? ""
+          : "opening-warning";
+        document.getElementById("openingStatus").textContent = hasBlessing
+          ? "Ready to play: this hand includes a Blessing."
+          : "No Blessing in this hand. Redraw to get a source of Faith.";
+        document.getElementById("keepOpening").disabled = !hasBlessing;
+        document.getElementById("redrawOpening").disabled = left === 0;
+        document.getElementById("redrawOpening").textContent = left
+          ? `Redraw · ${s.me.hand.length - 1} cards`
+          : "No redraws left";
+        document.getElementById("opening").classList.add("open");
+      }
+      function redrawOpening() {
+        if (openingRedrawCount >= 2) return;
+        openingRedrawCount++;
+        dealOpening(s.me, 5 - openingRedrawCount, openingRedrawCount === 2);
+        showOpening();
+      }
+      function keepOpening() {
+        if (!s.me.hand.some((c) => defs[c.id].kind === "Blessing")) return;
+        document.getElementById("opening").classList.remove("open");
+        s.recentDraws = {
+          reason: "Opening hand",
+          names: s.me.hand.map((c) => defs[c.id].name),
+        };
+        log(
+          "New match: " +
+            decks[chosen].name +
+            " vs " +
+            decks[enemy].name +
+            ". You go first.",
+        );
+        if (openingRedrawCount)
+          log(
+            "You redrew " +
+              openingRedrawCount +
+              " time" +
+              (openingRedrawCount === 1 ? "" : "s") +
+              " and kept " +
+              s.me.hand.length +
+              " cards.",
+          );
+        startTurn(s.me, true);
+        render();
+      }
+      function begin() {
+        enemy = document.getElementById("opponent").value;
+        if (!enemy || enemy === chosen)
+          return toast("Choose a different opposing commander.");
+        nextUid = 1;
+        history = [];
+        openingRedrawCount = 0;
+        s = {
+          turn: 1,
+          phase: "prepare",
+          over: false,
+          me: player(chosen),
+          ai: player(enemy),
+          faith: {},
+          sent: 0,
+          recentDraws: null,
+        };
+        dealOpening(s.me, 5);
+        dealOpening(s.ai, 5, true);
+        document.getElementById("start").style.display = "none";
+        showOpening();
+      }
+      function startTurn(p, first = false) {
+        p.played = 0;
+        p.blessingPlayed = false;
+        p.royalUsed = false;
+        for (let c of [...p.board, ...p.bless]) {
+          c.tapped = false;
+          c.fresh = false;
+          c.buff = 0;
+          c.shield = 0;
+        }
+        draw(p, 1, "Turn draw");
+        if (p === s.me) {
+          s.phase = "prepare";
+          s.faith = Object.fromEntries(decks[p.key].colors.map((c) => [c, 0]));
+          s.sent = 0;
+          log(
+            "Your turn " +
+              s.turn +
+              " begins" +
+              (first ? " — opening draw included." : "."),
+          );
+        }
+      }
+      function get(owner) {
+        return owner === "me" ? s.me : s.ai;
+      }
+      function witness(c, p) {
+        let d = defs[c.id],
+          w = d.w || 0;
+        if (
+          d.ability === "fellowship" &&
+          p.board.some((x) => x !== c && defs[x.id].tribe === "Shepherd")
+        )
+          w++;
+        if (d.ability === "loyal" && p.board.some((x) => x !== c)) w++;
+        if (p.sin >= 20) w = Math.max(0, w - 1);
+        return w + (c.buff || 0);
+      }
+      function resolve(c, p) {
+        let d = defs[c.id];
+        return (
+          (d.r || 0) +
+          (c.shield || 0) +
+          (d.ability === "guardian" ? 1 : 0) +
+          (p.board.some((x) => x !== c && defs[x.id].ability === "noah")
+            ? 1
+            : 0)
+        );
+      }
+      const commanderOrder = [
+        "david",
+        "esther",
+        "moses",
+        "paul",
+        "noah",
+        "ruth",
+      ];
+      function artStyle(id) {
+        let file, columns, rows, index;
+        if (id === "ruth_commander")
+          return "background-image:url('assets/ruth-commander.png');background-size:cover;background-position:center 22%";
+        if (id === "disciple") {
+          file = "noah-cards.webp";
+          columns = 5;
+          rows = 8;
+          index = 23;
+        } else if (id.endsWith("_commander")) {
+          file = "commanders.webp";
+          columns = 5;
+          rows = 1;
+          index = commanderOrder.indexOf(id.split("_")[0]);
+        } else {
+          let m = id.match(
+            /^(david|esther|moses|paul|noah|ruth)_(blessing|unit|prayer)(\d+)$/,
+          );
+          if (!m) return "";
+          let key = m[1],
+            kind = m[2],
+            n = Number(m[3]);
+          if (key === "ruth") {
+            file = "ruth-cards.png";
+            columns = 5;
+            rows = 8;
+            index = kind === "blessing" ? n : kind === "unit" ? 20 + n : 30 + n;
+          } else if (key === "david") {
+            file =
+              kind === "blessing" ? "david-places.webp" : "david-cards.webp";
+            columns = 4;
+            rows = 5;
+            index = kind === "blessing" ? n : kind === "unit" ? n : 10 + n;
+          } else {
+            file = key + "-cards.webp";
+            columns = 5;
+            rows = 8;
+            index = kind === "blessing" ? n : kind === "unit" ? 20 + n : 30 + n;
+          }
+        }
+        let col = index % columns,
+          row = Math.floor(index / columns);
+        return `background-image:url('assets/${file}');background-size:${columns * 100}% ${id.endsWith("_commander") ? "auto" : rows * 100 + "%"};background-position:${columns === 1 ? 0 : (col * 100) / (columns - 1)}% ${id.endsWith("_commander") ? 0 : rows === 1 ? 0 : (row * 100) / (rows - 1)}%`;
+      }
+      function card(c, owner, hand = false) {
+        let d = defs[c.id],
+          p = get(owner);
+        return `<div role="button" tabindex="0" class="card ${c.tapped ? "exhausted" : ""} ${owner === "me" && !hand && s.phase === "ministry" && !c.tapped && ["Servant", "Commander"].includes(d.kind) && (!c.fresh || d.godspeed) ? "ready-ministry" : ""}" data-color="${d.color}" onclick="inspect(${c.uid},'${owner}',${hand})" onkeydown="if(event.key==='Enter')inspect(${c.uid},'${owner}',${hand})"><div class="inner"><div class="name">${d.name}</div><div class="art" style="${artStyle(c.id)}"></div><div class="foot">${d.kind}${d.w !== undefined ? " · " + witness(c, p) + " / " + resolve(c, p) : ""}<br>${d.ability === "godspeed" ? "⚡ Godspeed" : d.text.slice(0, 28)}</div></div>${d.cost ? '<span class="cost">' + (d.cost + (d.kind === "Commander" ? p.tax : 0)) + "</span>" : ""}${c.tapped ? '<span class="tap">Exhausted</span>' : ""}</div>`;
+      }
+      function render() {
+        if (!s) return;
+        for (let [owner, k] of [
+          ["ai", "ai"],
+          ["me", "my"],
+        ]) {
+          let p = get(owner);
+          document.getElementById(k + "Name").textContent = decks[p.key].name;
+          document.getElementById(k + "Stats").innerHTML =
+            `<div class="stat">Salvation<b>${p.sal}/20</b></div><div class="stat">Sin<b>${p.sin}</b></div><div class="stat">Deck<b>${p.deck.length}</b></div><div class="stat">Hand<b>${p.hand.length}</b></div>`;
+          document.getElementById(k + "Board").innerHTML =
+            p.bless.map((c) => card(c, owner)).join("") +
+            p.board.map((c) => card(c, owner)).join("") +
+            (!p.bless.length && !p.board.length
+              ? '<span class="small">No cards in play</span>'
+              : "");
+        }
+        let reveal = document.getElementById("drawReveal");
+        reveal.hidden = !s.recentDraws;
+        if (s.recentDraws)
+          reveal.innerHTML =
+            "<strong>" +
+            s.recentDraws.reason +
+            " · New cards drawn</strong>" +
+            s.recentDraws.names
+              .map((name) => "<span>" + name + "</span>")
+              .join("");
+        document.getElementById("hand").innerHTML =
+          s.me.hand.map((c) => card(c, "me", true)).join("") +
+          (s.me.commander ? card(s.me.commander, "me", true) : "");
+        document.getElementById("phase").textContent = s.over
+          ? "Match Complete"
+          : "Turn " +
+            s.turn +
+            " · " +
+            (s.phase === "prepare" ? "Preparation" : "Ministry");
+        document.getElementById("hint").innerHTML =
+          `<b>Available Faith:</b> ${Object.entries(s.faith)
+            .map(([c, n]) => colors[c] + " " + n)
+            .join(
+              " · ",
+            )}<br><br>${s.over ? "The match has ended. Start a new game to try another deck." : s.phase === "prepare" ? "Play one Blessing, gather Faith and cast cards. You may play Prayers now or during Ministry." : "Tap a ready Servant to send it into Ministry. You can also cast Prayers from your hand."}<br><br><span class="mini">Your commander: ${s.me.commander ? "Command Zone · cost " + (4 + s.me.tax) : "In play or discarded"} · Discard: ${s.me.discard.length} · Opponent discard: ${s.ai.discard.length}</span>`;
+        document.getElementById("ministryBtn").disabled =
+          s.over || s.phase !== "prepare";
+        document.getElementById("endBtn").disabled = s.over;
+        let guide = document.getElementById("ministryGuide");
+        guide.hidden = s.phase !== "ministry" || s.over;
+        if (!guide.hidden) {
+          let ready = s.me.board.filter(
+            (c) => !c.tapped && (!c.fresh || defs[c.id].godspeed),
+          );
+          guide.innerHTML =
+            "<strong>Ministry · " +
+            ready.length +
+            " ready to send</strong><span>" +
+            (ready.length
+              ? "Tap a highlighted ready Servant in your row, then choose Send into Ministry. Your opponent may engage with a ready Servant."
+              : "No ready Servants remain. End your turn to see the opponent’s response.") +
+            "</span>";
+        }
+      }
+      function locate(uid, owner) {
+        let p = get(owner);
+        return [
+          ...p.hand,
+          ...p.board,
+          ...p.bless,
+          ...p.discard,
+          ...(p.commander ? [p.commander] : []),
+        ].find((c) => c.uid === uid);
+      }
+      function closeModal() {
+        document.getElementById("modal").classList.remove("open");
+      }
+      function modal(html) {
+        document.getElementById("modalContent").innerHTML =
+          '<div class="modal-top"><span>Card details</span><button class="close secondary" onclick="closeModal()">✕ Close</button></div>' +
+          html;
+        document.getElementById("modal").classList.add("open");
+        document.getElementById("modalContent").scrollTop = 0;
+      }
+      function inspect(uid, owner, hand) {
+        let c = locate(uid, owner);
+        if (!c) return;
+        let d = defs[c.id],
+          p = get(owner),
+          mine = owner === "me";
+        let actions = "";
+        if (mine && !s.over) {
+          if (hand) {
+            let cost = d.cost + (d.kind === "Commander" ? p.tax : 0),
+              allowed =
+                d.kind === "Blessing"
+                  ? !p.blessingPlayed
+                  : (d.kind === "Prayer" || s.phase === "prepare") &&
+                    canPay(p, d, cost, s.faith);
+            actions += `<button onclick="play(${uid})" ${allowed ? "" : "disabled"}>${d.kind === "Blessing" ? "Play Blessing" : d.kind === "Commander" ? "Call Commander" : "Cast " + d.kind}</button>`;
+            if (!allowed)
+              actions += `<span class="action-note">${d.kind === "Blessing" ? "One Blessing may be played each turn." : s.phase === "ministry" && d.kind !== "Prayer" ? "Cast this during Preparation." : "Needs " + cost + " Faith" + (d.req ? ", including 1 " + colors[d.req] : "") + ". Gather Faith from your Blessings."}</span>`;
+          } else if (
+            d.kind === "Blessing" &&
+            !c.tapped &&
+            s.phase === "prepare"
+          ) {
+            actions += `<button onclick="tapBlessing(${uid})">Gather Faith</button>`;
+          } else if (
+            (d.kind === "Servant" || d.kind === "Commander") &&
+            !c.tapped &&
+            (!c.fresh || d.godspeed) &&
+            s.phase === "ministry"
+          ) {
+            actions += `<button onclick="send(${uid})">Send into Ministry</button>`;
+          }
+          if (
+            !hand &&
+            s.me.board.includes(c) &&
+            d.ability === "esther" &&
+            s.me.royalUsed === false &&
+            Object.values(s.faith).reduce((a, b) => a + b, 0) > 0
+          )
+            actions += ` <button onclick="estherShield(${uid})">Royal Protection (1 Faith)</button>`;
+        }
+        modal(
+          `<div class="detail"><div class="large-card"><h2>${d.name}</h2><div class="large-art" style="${artStyle(c.id)}"></div><div class="rules"><b>${d.kind}</b> · ${d.cost ? "Cost " + (d.cost + (d.kind === "Commander" ? p.tax : 0)) + " Faith" : "No cost"}<br>${d.w !== undefined ? "Witness " + witness(c, p) + " / Resolve " + resolve(c, p) + "<br>" : ""}<br>${d.text}</div></div><div class="detail-info"><h2>${d.name}</h2><p>${d.text}</p><p class="mini">${d.tribe || d.kind} · ${colors[d.color] || "Either commander color"} ${c.tapped ? "· Exhausted" : ""}</p><div class="choices">${actions || '<span class="mini">No action available right now.</span>'}</div></div></div>`,
+        );
+      }
+      function canPay(p, d, cost, bank) {
+        let req = d.req;
+        if (req && (!bank[req] || bank[req] < 1)) return false;
+        return Object.values(bank).reduce((a, b) => a + b, 0) >= cost;
+      }
+      function spend(bank, cost, req) {
+        if (req) {
+          bank[req]--;
+          cost--;
+        }
+        for (let c of Object.keys(bank).sort((a, b) => bank[b] - bank[a])) {
+          let n = Math.min(bank[c], cost);
+          bank[c] -= n;
+          cost -= n;
+        }
+        return cost === 0;
+      }
+      function afterCard(p) {
+        p.played++;
+        if (
+          p.key === "esther" &&
+          p.board.some((c) => defs[c.id].ability === "esther") &&
+          p.played === 2
+        ) {
+          draw(p, 1, "Royal Preparation");
+          if (p === s.me && p.hand.length) {
+            let c = p.hand[Math.floor(Math.random() * p.hand.length)];
+            p.hand = p.hand.filter((x) => x !== c);
+            p.discard.push(c);
+            log(
+              "Royal Preparation: drew then discarded " + defs[c.id].name + ".",
+            );
+          } else if (p.hand.length) {
+            let c = p.hand.shift();
+            p.discard.push(c);
+            log("Esther used Royal Preparation.");
+          }
+        }
+      }
+      function play(uid) {
+        if (!s || s.over) return;
+        let p = s.me,
+          c = [...p.hand, ...(p.commander ? [p.commander] : [])].find(
+            (x) => x.uid === uid,
+          );
+        if (!c) return;
+        let d = defs[c.id];
+        if (d.kind !== "Prayer" && s.phase !== "prepare")
+          return toast("This card is played during Preparation.");
+        if (d.kind === "Blessing") {
+          if (p.blessingPlayed) return toast("Only one Blessing per turn.");
+          p.blessingPlayed = true;
+          p.hand = p.hand.filter((x) => x !== c);
+          p.bless.push(c);
+          c.fresh = false;
+          log("You played " + d.name + ".");
+          if (
+            p.key === "ruth" &&
+            p.board.some((x) => defs[x.id].ability === "ruth")
+          )
+            draw(p, 1, "Ruth’s Faithful Gleaning");
+          afterCard(p);
+          closeModal();
+          render();
+          return;
+        }
+        let cost = d.cost + (d.kind === "Commander" ? p.tax : 0);
+        if (!canPay(p, d, cost, s.faith))
+          return toast(
+            "Gather more Faith, including " +
+              (colors[d.req] || "the required color") +
+              ".",
+          );
+        if (
+          d.kind === "Prayer" &&
+          ["buff", "buff3", "shield"].includes(d.ability)
+        ) {
+          let targets = p.board.filter((x) => !x.tapped);
+          if (!targets.length)
+            return toast("You need a ready Servant to target.");
+          modal(
+            "<h2>" +
+              d.name +
+              '</h2><p>Choose a Servant:</p><div class="choices">' +
+              targets
+                .map(
+                  (x) =>
+                    `<button onclick="commitPlay(${uid},${x.uid})">${defs[x.id].name}</button>`,
+                )
+                .join("") +
+              "</div>",
+          );
+          return;
+        }
+        commitPlay(uid, null);
+      }
+      function commitPlay(uid, target) {
+        let p = s.me,
+          c = [...p.hand, ...(p.commander ? [p.commander] : [])].find(
+            (x) => x.uid === uid,
+          );
+        if (!c) return;
+        let d = defs[c.id],
+          cost = d.cost + (d.kind === "Commander" ? p.tax : 0);
+        if (!canPay(p, d, cost, s.faith)) return toast("Not enough Faith.");
+        spend(s.faith, cost, d.req);
+        if (d.kind === "Commander") p.commander = null;
+        else p.hand = p.hand.filter((x) => x !== c);
+        if (d.kind === "Prayer") {
+          effect(d.ability, p, s.ai, target);
+          p.discard.push(c);
+        } else {
+          p.board.push(c);
+          enter(c, p, s.ai);
+        }
+        log("You cast " + d.name + ".");
+        afterCard(p);
+        closeModal();
+        check();
+        render();
+      }
+      function token(p, n = 1) {
+        for (let i = 0; i < n; i++) p.board.push(make("disciple"));
+      }
+      defs.disciple = {
+        name: "Disciple",
+        art: "🕊️",
+        kind: "Servant",
+        color: "white",
+        cost: 0,
+        w: 1,
+        r: 1,
+        tribe: "Disciple",
+        text: "A 1/1 Disciple token.",
+      };
+      function enter(c, p, opp) {
+        let d = defs[c.id];
+        switch (d.ability) {
+          case "ruth":
+            token(p);
+            break;
+          case "glean":
+            draw(p, 1, d.name);
+            p.sin = Math.max(0, p.sin - 1);
+            break;
+          case "share":
+            token(p);
+            p.sin = Math.max(0, p.sin - 1);
+            break;
+          case "cleanse1":
+            p.sin = Math.max(0, p.sin - 1);
+            break;
+          case "cleanse2":
+            p.sin = Math.max(0, p.sin - 2);
+            break;
+          case "draw1":
+            draw(p, 1, d.name);
+            break;
+          case "token":
+            token(p);
+            break;
+          case "noah":
+            token(p, 2);
+            break;
+          case "filter":
+            draw(p, 1, d.name);
+            if (p.hand.length)
+              p.discard.push(
+                p.hand.splice(Math.floor(Math.random() * p.hand.length), 1)[0],
+              );
+            break;
+          case "exhaust": {
+            let t = opp.board.find((x) => !x.tapped);
+            if (t) t.tapped = true;
+            break;
+          }
+          case "godspeed":
+            break;
+          case "moses": {
+            let t = opp.board.find((x) => !x.tapped);
+            if (t) t.tapped = true;
+            break;
+          }
+          case "recover":
+            effect("recover", p, opp);
+            break;
+          case "ward": {
+            let t = p.board.find((x) => x !== c);
+            if (t) t.shield += 2;
+            break;
+          }
+          case "inspire": {
+            let t = p.board.find((x) => x !== c);
+            if (t) t.buff = (t.buff || 0) + 1;
+            break;
+          }
+        }
+      }
+      function effect(type, p, opp, target) {
+        let t = p.board.find((x) => x.uid === target);
+        switch (type) {
+          case "buff":
+            if (t) t.buff += defs[t.id].tribe === "Shepherd" ? 3 : 2;
+            break;
+          case "buff3":
+            if (t) t.buff += 3;
+            break;
+          case "shield":
+            if (t) t.shield += 2;
+            break;
+          case "harvest":
+            draw(p, 2, "Shared Harvest");
+            token(p);
+            break;
+          case "welcome":
+            p.sin = Math.max(0, p.sin - 2);
+            token(p);
+            break;
+          case "draw1":
+            draw(p, 1, "Prayer");
+            break;
+          case "draw2":
+            draw(p, 2, "Prayer");
+            break;
+          case "drawtoken":
+            draw(p, 1, "Prayer");
+            token(p);
+            break;
+          case "feast":
+            draw(p, 2, "A Table Prepared");
+            p.sin = Math.max(0, p.sin - 1);
+            break;
+          case "token2":
+            token(p, 2);
+            break;
+          case "cleanse2":
+            p.sin = Math.max(0, p.sin - 2);
+            break;
+          case "restore":
+            p.sin = Math.max(0, p.sin - 2);
+            draw(p, 1, "Restoration");
+            break;
+          case "exhaust2":
+            opp.board
+              .filter((x) => !x.tapped)
+              .slice(0, 2)
+              .forEach((x) => (x.tapped = true));
+            break;
+          case "recover": {
+            let i = p.discard.findIndex((x) =>
+              ["Servant", "Commander"].includes(defs[x.id].kind),
+            );
+            if (i >= 0) p.hand.push(p.discard.splice(i, 1)[0]);
+            break;
+          }
+        }
+      }
+      function tapBlessing(uid) {
+        if (s.phase !== "prepare")
+          return toast("Gather Faith during Preparation.");
+        let c = s.me.bless.find((x) => x.uid === uid);
+        if (!c || c.tapped) return;
+        let d = defs[c.id];
+        if (d.color === "either")
+          modal(
+            "<h2>Gather Faith</h2><p>Choose a color for " +
+              d.name +
+              ':</p><div class="choices">' +
+              decks[s.me.key].colors
+                .map(
+                  (color) =>
+                    `<button onclick="gather(${uid},'${color}')">${colors[color]}</button>`,
+                )
+                .join("") +
+              "</div>",
+          );
+        else gather(uid, d.color);
+      }
+      function gather(uid, color) {
+        let c = s.me.bless.find((x) => x.uid === uid);
+        if (!c || c.tapped) return;
+        c.tapped = true;
+        s.faith[color] = (s.faith[color] || 0) + 1;
+        log("You gathered 1 " + colors[color] + " Faith.");
+        closeModal();
+        render();
+      }
+      function ministry() {
+        if (s.phase !== "prepare" || s.over) return;
+        s.phase = "ministry";
+        log("You entered Ministry. Tap a ready Servant to send them.");
+        render();
+      }
+      function send(uid) {
+        let c = s.me.board.find((x) => x.uid === uid);
+        if (
+          !c ||
+          c.tapped ||
+          (c.fresh && !defs[c.id].godspeed) ||
+          s.phase !== "ministry"
+        )
+          return toast("This Servant cannot minister yet.");
+        c.tapped = true;
+        let w = witness(c, s.me),
+          block = s.ai.board.find((x) => !x.tapped);
+        if (block) {
+          block.tapped = true;
+          let r = resolve(block, s.ai);
+          let prevented = Math.min(w, r);
+          w -= prevented;
+          log(
+            decks[s.ai.key].name +
+              " engaged " +
+              defs[c.id].name +
+              " with " +
+              defs[block.id].name +
+              ", preventing " +
+              prevented +
+              " Salvation.",
+          );
+          if (defs[block.id].ability === "scry")
+            log("Palace Attendant inspected the top card.");
+          if (defs[c.id].ability === "david" && r > defs[c.id].r) {
+            w += 2;
+            log("David’s Courage added 2 Witness.");
+          }
+        }
+        if (w > 0) {
+          let bonus = s.me.board.filter(
+            (x) =>
+              x !== c &&
+              defs[x.id].ability === "companion" &&
+              defs[c.id].tribe === "Shepherd",
+          ).length;
+          let total = w + bonus;
+          s.ai.sal += total;
+          log(defs[c.id].name + " shared " + total + " Salvation!");
+          if (defs[c.id].ability === "david") token(s.me);
+          if (defs[c.id].ability === "ruth") {
+            token(s.me);
+            s.me.sin = Math.max(0, s.me.sin - 1);
+          }
+          if (defs[c.id].ability === "generous")
+            draw(s.me, 1, "Generous Kinsman");
+          if (defs[c.id].ability === "moses")
+            draw(s.me, 1, "Commander ministry");
+          if (defs[c.id].ability === "paul") {
+            s.me.sin = Math.max(0, s.me.sin - 1);
+            draw(s.me, 1, "Commander ministry");
+          }
+        } else log(defs[c.id].name + " was fully engaged.");
+        s.sent++;
+        closeModal();
+        check();
+        render();
+      }
+      function estherShield(uid) {
+        let p = s.me;
+        if (
+          p.royalUsed ||
+          Object.values(s.faith).reduce((a, b) => a + b, 0) < 1
+        )
+          return;
+        spend(s.faith, 1);
+        let t = p.board.find((x) => x.uid === uid);
+        if (t) t.shield += 2;
+        p.royalUsed = true;
+        log("Esther activated For Such a Time.");
+        closeModal();
+        render();
+      }
+      function check() {
+        if (s.ai.sal >= 20 || s.me.sal >= 20) {
+          s.over = true;
+          log(
+            (s.ai.sal >= 20 ? decks[s.me.key].name : decks[s.ai.key].name) +
+              " completed the Great Commission!",
+          );
+          toast(s.ai.sal >= 20 ? "You win!" : "Opponent wins!");
+        }
+      }
+      function endTurn() {
+        if (s.over) return;
+        closeModal();
+        s.faith = Object.fromEntries(decks[s.me.key].colors.map((c) => [c, 0]));
+        let before = s.me.sal;
+        log("You ended your turn.");
+        aiTurn();
+        log(
+          "Opponent turn complete: " +
+            (s.me.sal - before) +
+            " Salvation shared with you.",
+        );
+        if (s.over) {
+          render();
+          return;
+        }
+        s.turn++;
+        startTurn(s.me);
+        render();
+      }
+      function aiTurn() {
+        let p = s.ai,
+          opp = s.me;
+        startTurn(p);
+        let blessing = p.hand.find((x) => defs[x.id].kind === "Blessing");
+        if (blessing) {
+          p.hand = p.hand.filter((x) => x !== blessing);
+          p.bless.push(blessing);
+          log(decks[p.key].name + " played " + defs[blessing.id].name + ".");
+          if (
+            p.key === "ruth" &&
+            p.board.some((x) => defs[x.id].ability === "ruth")
+          )
+            draw(p, 1, "Ruth’s Faithful Gleaning");
+          afterCard(p);
+        }
+        let bank = Object.fromEntries(decks[p.key].colors.map((c) => [c, 0]));
+        for (let b of p.bless) {
+          let d = defs[b.id],
+            color =
+              d.color === "either"
+                ? decks[p.key].colors.find((c) => bank[c] < 1) ||
+                  decks[p.key].colors[0]
+                : d.color;
+          bank[color]++;
+          b.tapped = true;
+        }
+        for (let i = 0; i < 3; i++) {
+          let candidates = [...p.hand, ...(p.commander ? [p.commander] : [])]
+            .filter((c) => {
+              let d = defs[c.id];
+              return (
+                d.kind !== "Blessing" &&
+                canPay(
+                  p,
+                  d,
+                  d.cost + (d.kind === "Commander" ? p.tax : 0),
+                  bank,
+                )
+              );
+            })
+            .sort((a, b) => {
+              let x = defs[a.id],
+                y = defs[b.id];
+              return (
+                (y.kind === "Commander" ? 4 : 0) -
+                  (x.kind === "Commander" ? 4 : 0) || y.cost - x.cost
+              );
+            });
+          let c = candidates[0];
+          if (!c) break;
+          let d = defs[c.id],
+            cost = d.cost + (d.kind === "Commander" ? p.tax : 0);
+          if (
+            d.kind === "Prayer" &&
+            ["buff", "buff3", "shield"].includes(d.ability) &&
+            !p.board.some((x) => !x.tapped)
+          )
+            break;
+          spend(bank, cost, d.req);
+          if (d.kind === "Commander") p.commander = null;
+          else p.hand = p.hand.filter((x) => x !== c);
+          if (d.kind === "Prayer") {
+            let target = p.board.find((x) => !x.tapped);
+            effect(d.ability, p, opp, target?.uid);
+            p.discard.push(c);
+          } else {
+            p.board.push(c);
+            enter(c, p, opp);
+          }
+          log(decks[p.key].name + " cast " + d.name + ".");
+          afterCard(p);
+        }
+        for (let c of [...p.board]) {
+          if (c.tapped || (c.fresh && !defs[c.id].godspeed)) continue;
+          let w = witness(c, p),
+            block = opp.board.find((x) => !x.tapped);
+          c.tapped = true;
+          if (block) {
+            block.tapped = true;
+            let r = resolve(block, opp);
+            w = Math.max(0, w - r);
+            log(defs[block.id].name + " engaged " + defs[c.id].name + ".");
+          }
+          if (w > 0) {
+            let bonus = p.board.filter(
+              (x) =>
+                x !== c &&
+                defs[x.id].ability === "companion" &&
+                defs[c.id].tribe === "Shepherd",
+            ).length;
+            opp.sal += w + bonus;
+            log(
+              decks[p.key].name +
+                " shared " +
+                (w + bonus) +
+                " Salvation with you.",
+            );
+            if (defs[c.id].ability === "david") token(p);
+            if (defs[c.id].ability === "ruth") {
+              token(p);
+              p.sin = Math.max(0, p.sin - 1);
+            }
+            if (defs[c.id].ability === "generous")
+              draw(p, 1, "Generous Kinsman");
+            if (defs[c.id].ability === "moses") draw(p);
+            if (defs[c.id].ability === "paul") {
+              p.sin = Math.max(0, p.sin - 1);
+              draw(p, 1, "Commander ministry");
+            }
+          }
+        }
+        check();
+      }
+      function showRules() {
+        modal(
+          `<h2>How to play</h2><p><b>Your goal:</b> Bring the opponent to 20 Salvation. These are strategy-game counters, not a measurement of real spiritual salvation.</p><ol><li><b>Provision:</b> Refresh your cards and draw a card. Both players draw on their first turn. Before play, you may redraw your opening five-card hand twice, keeping four then three cards. A final redraw always includes a Blessing.</li><li><b>Preparation:</b> Play up to one Blessing. Tap Blessings to gather colored Faith. Cast Servants, Prayers or your commander from the Command Zone.</li><li><b>Ministry:</b> Tap “Enter Ministry,” then tap each ready Servant you want to send. An opposing ready Servant automatically engages each one, preventing Salvation up to its Resolve.</li><li><b>Reflection:</b> End your turn; unused Faith empties and your opponent takes their turn.</li></ol><p><b>Godspeed:</b> May minister on the turn it enters. <b>Fellowship:</b> Gains a bonus when another appropriate Servant is present. <b>Steadfast:</b> Extra Resolve when engaging. <b>Singleton decks:</b> Each named card appears only once in its 40-card deck. New cards are shown above your hand and named in the Journey Log. <b>Sin:</b> At 20 or more, your Servants have −1 Witness. Cards can remove Sin.</p><p><b>Commander:</b> Always available in your Command Zone at the listed Faith cost. Commanders stay on the battlefield once cast in this prototype. <b>Color:</b> Each card requires at least 1 Faith of its own color; remaining Faith may be paid using either commander color.</p><p><b>Testing note:</b> The computer automatically engages with its first ready Servant. Advanced response windows and multiplayer are not yet implemented.</p><button onclick="closeModal()">Return to game</button>`,
+        );
+      }
+      function restart() {
+        if (!s || confirm("Choose decks and start a new match?")) {
+          closeModal();
+          document.getElementById("start").style.display = "flex";
+          buildChoices();
+        }
+      }
+      function downloadNotes() {
+        let blob = new Blob(
+            [
+              `Righteous Salvation v0.5\n${decks[s.me.key].name} vs ${decks[s.ai.key].name}\n\n` +
+                history.join("\n"),
+            ],
+            { type: "text/plain" },
+          ),
+          url = URL.createObjectURL(blob),
+          a = document.createElement("a");
+        a.href = url;
+        a.download = "righteous-salvation-match-log.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+      buildChoices();
+    </script>
+    <script src="clarity-v1.js?v=1"></script>
+    <a
+      href="https://venmo.com/u/MTA-7777"
+      target="_blank"
+      rel="noopener"
+      aria-label="Buy Mike a C4 on Venmo"
+      style="
+        position: fixed;
+        right: 12px;
+        bottom: 12px;
+        z-index: 7;
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border: 1px solid #85888d;
+        border-radius: 999px;
+        background: #202226e8;
+        color: #fff;
+        text-decoration: none;
+        font:
+          700 12px &quot;DM Sans&quot;,
+          sans-serif;
+        box-shadow: 0 4px 16px #0008;
+      "
+      >⚡ Buy Mike a C4 · @MTA-7777</a
+    >
+  </body>
+</html>
