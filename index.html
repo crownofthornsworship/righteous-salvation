@@ -1505,7 +1505,7 @@
               <circle cx="36" cy="30" r="3" fill="#bb2634" /></svg></span
           ><span>RIGHTEOUS<br /><em>SALVATION</em></span>
         </div>
-        <div class="small">ILLUSTRATED GENESIS EDITION · v0.7</div>
+        <div class="small">ILLUSTRATED GENESIS EDITION · v0.8</div>
       </div>
       <div style="display: flex; gap: 7px">
         <button onclick="showRules()">? Rules</button
@@ -1629,7 +1629,8 @@
         <div class="start-actions">
           <label for="opponent">Opponent:</label
           ><select id="opponent"></select
-          ><button onclick="begin()">Begin Playtest →</button>
+          ><button type="button" onclick="learnToPlay()">Learn to Play</button>
+          <button id="beginBtn" onclick="begin()">Skip Tutorial · Begin →</button>
         </div>
         <p class="small">
           No login · No advertisements · Works offline after loading
@@ -1664,6 +1665,12 @@
     <div class="toast" id="toast"></div>
     <script>
       "use strict";
+      const EXPERIENCE_KEY = "righteousSalvation.experience.v1";
+      let experience;
+      try { experience = { tutorial: "pending", tips: true, ...JSON.parse(localStorage.getItem(EXPERIENCE_KEY) || "{}") }; }
+      catch { experience = { tutorial: "pending", tips: true }; }
+      function persistExperience() { try { localStorage.setItem(EXPERIENCE_KEY, JSON.stringify(experience)); } catch {} }
+      function learnToPlay() { experience.tutorial = "complete"; persistExperience(); showRules(); }
       const colors = {
         green: "Growth",
         red: "Zeal",
@@ -3324,6 +3331,7 @@
         render();
       }
       function begin() {
+        if (experience.tutorial === "pending") { experience.tutorial = "skipped"; persistExperience(); }
         enemy = document.getElementById("opponent").value;
         if (!enemy || enemy === chosen)
           return toast("Choose a different opposing commander.");
@@ -4094,14 +4102,19 @@
       }
       function showRules() {
         modal(
-          `<h2>How to play</h2><p><b>Your goal:</b> Bring the opponent to 20 Salvation. These are strategy-game counters, not a measurement of real spiritual salvation.</p><ol><li><b>Provision:</b> Refresh your cards and draw a card. Both players draw on their first turn. Before play, you may redraw your opening five-card hand twice, keeping four then three cards. A final redraw always includes a Blessing.</li><li><b>Preparation:</b> Play up to one Blessing. Tap Blessings to gather colored Faith. Cast Servants, Prayers or your commander from the Command Zone.</li><li><b>Ministry:</b> Tap “Enter Ministry,” then tap each ready Servant you want to send. An opposing ready Servant automatically engages each one, preventing Salvation up to its Resolve.</li><li><b>Reflection:</b> End your turn; unused Faith empties and your opponent takes their turn.</li></ol><p><b>Godspeed:</b> May minister on the turn it enters. <b>Fellowship:</b> Gains a bonus when another appropriate Servant is present. <b>Steadfast:</b> Extra Resolve when engaging. <b>Singleton decks:</b> Each named card appears only once in its 40-card deck. New cards are shown above your hand and named in the Journey Log. <b>Sin:</b> At 20 or more, your Servants have −1 Witness. Cards can remove Sin.</p><p><b>Commander:</b> Always available in your Command Zone at the listed Faith cost. Commanders stay on the battlefield once cast in this prototype. <b>Color:</b> Each card requires at least 1 Faith of its own color; remaining Faith may be paid using either commander color.</p><p><b>Testing note:</b> The computer automatically engages with its first ready Servant. Advanced response windows and multiplayer are not yet implemented.</p><button onclick="closeModal()">Return to game</button>`,
+          `<h2>How to play</h2><p><b>Your goal:</b> Bring the opponent to 20 Salvation. These are strategy-game counters, not a measurement of real spiritual salvation.</p><ol><li><b>Provision:</b> Refresh your cards and draw a card. Both players draw on their first turn. Before play, you may redraw your opening five-card hand twice, keeping four then three cards. A final redraw always includes a Blessing.</li><li><b>Preparation:</b> Play up to one Blessing. Tap Blessings to gather colored Faith. Cast Servants, Prayers or your commander from the Command Zone.</li><li><b>Ministry:</b> Tap “Enter Ministry,” then tap each ready Servant you want to send. An opposing ready Servant automatically engages each one, preventing Salvation up to its Resolve.</li><li><b>Reflection:</b> End your turn; unused Faith empties and your opponent takes their turn.</li></ol><p><b>Godspeed:</b> May minister on the turn it enters. <b>Fellowship:</b> Gains a bonus when another appropriate Servant is present. <b>Steadfast:</b> Extra Resolve when engaging. <b>Singleton decks:</b> Each named card appears only once in its 40-card deck. New cards are shown above your hand and named in the Journey Log. <b>Sin:</b> At 20 or more, your Servants have −1 Witness. Cards can remove Sin.</p><p><b>Commander:</b> Always available in your Command Zone at the listed Faith cost. Commanders stay on the battlefield once cast in this prototype. <b>Color:</b> Each card requires at least 1 Faith of its own color; remaining Faith may be paid using either commander color.</p><p><b>Testing note:</b> The computer automatically engages with its first ready Servant. Advanced response windows and multiplayer are not yet implemented.</p><p><b>During play:</b> the phase panel and red Ministry guide give contextual instructions. You can reopen these rules at any time without restarting.</p><button onclick="closeModal()">Return to game</button>`,
         );
+      }
+      function updateExperienceLabel() {
+        const button = document.getElementById("beginBtn");
+        if (button) button.textContent = experience.tutorial === "pending" ? "Skip Tutorial · Begin →" : "Begin Playtest →";
       }
       function restart() {
         if (!s || confirm("Choose decks and start a new match?")) {
           closeModal();
           document.getElementById("start").style.display = "flex";
           buildChoices();
+          updateExperienceLabel();
         }
       }
       function downloadNotes() {
@@ -4120,6 +4133,7 @@
         URL.revokeObjectURL(url);
       }
       buildChoices();
+      updateExperienceLabel();
     </script>
     <script src="clarity-v1.js?v=1"></script>
     <a
